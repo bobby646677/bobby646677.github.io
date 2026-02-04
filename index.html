@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFB6C1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* To change background image, add this class to body and update the URL */
+        body.custom-bg {
+            background-image: url('your-image-url-here.jpg');
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 60px 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #E91E63;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .heart {
+            font-size: 4em;
+            margin: 20px 0;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .question {
+            font-size: 1.8em;
+            color: #333;
+            margin: 30px 0;
+            font-weight: bold;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            position: relative;
+            min-height: 80px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #E91E63, #F06292);
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #9E9E9E, #BDBDBD);
+            color: white;
+            position: fixed;
+            transition: all 0.3s ease;
+        }
+
+        /* Invisible placeholder to maintain Yes button position */
+        .no-placeholder {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            visibility: hidden;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(233, 30, 99, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .celebration.active {
+            display: flex;
+        }
+
+        .celebration h2 {
+            font-size: 4em;
+            color: white;
+            margin-bottom: 20px;
+            animation: fadeInScale 0.8s ease-out;
+        }
+
+        .celebration .hearts {
+            font-size: 3em;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 20px;
+                margin: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .question {
+                font-size: 1.4em;
+            }
+
+            button {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <h1>Hey There! 💕</h1> -->
+        <div class="heart">❤️</div>
+        <p class="question">Will you be my Valentine?</p>
+        <div class="buttons">
+            <button id="yesBtn">Yes! 💖</button>
+            <button id="noBtn">No</button>
+            <div class="no-placeholder"></div>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration">
+        <h2>Yay! 🎉</h2>
+        <div class="hearts">💝 💖 💕 💗 💓</div>
+        <p style="color: white; font-size: 1.5em; margin-top: 20px;">I'm so happy! 😊</p>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const celebration = document.getElementById('celebration');
+        const placeholder = document.querySelector('.no-placeholder');
+
+        // Set initial position of No button to overlap the placeholder
+        function setInitialPosition() {
+            const placeholderRect = placeholder.getBoundingClientRect();
+            noBtn.style.left = placeholderRect.left + 'px';
+            noBtn.style.top = placeholderRect.top + 'px';
+            noBtn.style.width = placeholderRect.width + 'px';
+            noBtn.style.height = placeholderRect.height + 'px';
+        }
+
+        // Call on load and resize
+        window.addEventListener('load', setInitialPosition);
+        window.addEventListener('resize', setInitialPosition);
+
+        // Function to move the "No" button to a random position
+        function moveButton() {
+            // Get button dimensions
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            
+            // Calculate available space (accounting for button size)
+            const maxX = window.innerWidth - btnWidth - 40;
+            const maxY = window.innerHeight - btnHeight - 40;
+            
+            // Generate random position
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            // Apply new position with smooth transition
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Add hover event listener to "No" button
+        noBtn.addEventListener('mouseenter', moveButton);
+        
+        // For mobile devices, also handle touch
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+        // Array of messages for the No button
+        const noMessages = ['No', 'Are you sure?', 'fr?', 'nuh uh'];
+        let noMessageIndex = 0;
+
+        // Handle No button clicks
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            noMessageIndex = (noMessageIndex + 1) % noMessages.length;
+            noBtn.textContent = noMessages[noMessageIndex];
+            moveButton(); // Also move the button when clicked
+        });
+
+        // "Yes" button click handler
+        yesBtn.addEventListener('click', () => {
+            celebration.classList.add('active');
+            
+            // Create confetti effect
+            createConfetti();
+        });
+
+        // Simple confetti effect
+        function createConfetti() {
+            const colors = ['#E91E63', '#F06292', '#FF4081', '#FF80AB'];
+            const confettiCount = 50;
+
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.pointerEvents = 'none';
+                    
+                    document.body.appendChild(confetti);
+
+                    const fallDuration = 3000 + Math.random() * 2000;
+                    const fallDistance = window.innerHeight + 10;
+                    const drift = (Math.random() - 0.5) * 100;
+
+                    confetti.animate([
+                        { transform: 'translateY(0px) translateX(0px) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${fallDistance}px) translateX(${drift}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                    ], {
+                        duration: fallDuration,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    });
+
+                    setTimeout(() => confetti.remove(), fallDuration);
+                }, i * 50);
+            }
+        }
+
+        // Optional: Click celebration to close
+        celebration.addEventListener('click', () => {
+            celebration.classList.remove('active');
+        });
+    </script>
+
+    <!-- 
+    TO CHANGE THE BACKGROUND IMAGE:
+    1. Upload your image to the same folder as this HTML file
+    2. Add the class "custom-bg" to the body tag above
+    3. Update the background-image URL in the CSS (line 28) to your image filename
+    
+    Example: 
+    <body class="custom-bg">
+    
+    And in CSS:
+    body.custom-bg {
+        background-image: url('my-background.jpg');
+    }
+    -->
+</body>
+</html>
