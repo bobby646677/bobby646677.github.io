@@ -129,6 +129,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            padding: 20px;
         }
 
         .celebration.active {
@@ -145,6 +146,34 @@
         .celebration .hearts {
             font-size: 3em;
             animation: float 3s ease-in-out infinite;
+        }
+
+        .celebration p {
+            color: white;
+            font-size: 1.3em;
+            margin-top: 20px;
+            max-width: 700px;
+            padding: 0 30px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        #startQuizBtn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            color: #E91E63;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            height: 50px;
+            width: auto;
+            max-width: none;
+            flex: none;
+            transition: all 0.3s ease;
         }
 
         #startQuizBtn:hover {
@@ -335,6 +364,15 @@
                 padding: 12px 30px;
                 font-size: 1em;
             }
+
+            .celebration p {
+                font-size: 1.1em;
+                padding: 0 20px;
+            }
+
+            .celebration h2 {
+                font-size: 3em;
+            }
         }
     </style>
 </head>
@@ -351,10 +389,10 @@
     </div>
 
     <div class="celebration" id="celebration">
-        <h2>YIPPEEEEE! 🎉</h2>
+        <h2>YIPPEEEEE!!!!!</h2>
         <div class="hearts">💝 💖 💕 💗 💓</div>
-        <p style="color: white; font-size: 1.5em; margin-top: 20px;">I know we'll be away for valentines day, but I can't wait to celebrate our 4th valentines day a lil early with you. You are my world and I can't wait to spend the rest of my life with you. So that being saiiiddd......</p>
-        <button id="startQuizBtn" style="margin-top: 30px; padding: 15px 30px; font-size: 1.1em; border: none; border-radius: 50px; background: white; color: #E91E63; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); height: 50px; width: auto; max-width: none; flex: none;">Can you answer a couple things for me...</button>
+        <p>I know we'll be away for valentines day, but I can't wait to celebrate our 4th valentines day a lil early with you. You are my world and I can't wait to spend the rest of my life with you. So that being saiiiddd......</p>
+        <button id="startQuizBtn">Can you answer a couple things for me...</button>
     </div>
 
     <div class="questionnaire" id="questionnaire">
@@ -372,8 +410,9 @@
         <div class="final-hearts" style="bottom: 25%; right: 10%; animation-delay: 6s;">💝</div>
         <div class="final-hearts" style="top: 50%; left: 5%; animation-delay: 1s;">💓</div>
         <div class="final-hearts" style="top: 60%; right: 8%; animation-delay: 3s;">❤️</div>
-        <h1>I love you 💕</h1>
-        <p>See you next week Wednesday ;)</p>
+        <h1>I loooooooove youuuuuu</h1>
+        <p>mmmmmmmmmwaaaaahhhhhhhh</p>
+        <p>See you next wednesday ;)</p>
     </div>
 
     <script>
@@ -480,7 +519,6 @@
         };
 
         // Initialize EmailJS with your public key
-        // REPLACE 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
         emailjs.init('nCBqEyUb2wd57sxAp');
 
         function startQuestionnaire() {
@@ -513,6 +551,9 @@
             if (currentQuestion === 1) answers.vibe = answer;
             if (currentQuestion === 2) answers.dessert = answer;
             
+            console.log('Question', currentQuestion, 'Answer:', answer);
+            console.log('All answers so far:', answers);
+            
             // Remove selected class from all buttons
             document.querySelectorAll('.answer-btn').forEach(b => {
                 b.classList.remove('selected');
@@ -526,7 +567,6 @@
         }
 
         function sendEmail() {
-            // REPLACE these with your actual EmailJS Service ID and Template ID
             const serviceID = 'service_4966l8n';
             const templateID = 'template_1m4p8hj';
 
@@ -536,11 +576,13 @@
                 dessert_choice: answers.dessert
             };
 
+            console.log('Attempting to send email with params:', templateParams);
+
             emailjs.send(serviceID, templateID, templateParams)
                 .then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
+                    console.log('✅ EMAIL SENT SUCCESSFULLY!', response.status, response.text);
                 }, function(error) {
-                    console.log('FAILED...', error);
+                    console.error('❌ EMAIL FAILED:', error);
                 });
         }
 
@@ -595,26 +637,6 @@
                 }, i * 50);
             }
         }
-
-        // Optional: Click celebration to close
-        celebration.addEventListener('click', () => {
-            celebration.classList.remove('active');
-        });
     </script>
-
-    <!-- 
-    TO CHANGE THE BACKGROUND IMAGE:
-    1. Upload your image to the same folder as this HTML file
-    2. Add the class "custom-bg" to the body tag above
-    3. Update the background-image URL in the CSS (line 28) to your image filename
-    
-    Example: 
-    <body class="custom-bg">
-    
-    And in CSS:
-    body.custom-bg {
-        background-image: url('my-background.jpg');
-    }
-    -->
 </body>
 </html>
