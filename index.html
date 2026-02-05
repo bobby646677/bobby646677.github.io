@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine? 💝</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -27,7 +28,7 @@
 
         /* To change background image, add this class to body and update the URL */
         body.custom-bg {
-            background-image: url('your-image-url-here.jpg');
+            background-image: url('collage.png');
         }
 
         .container {
@@ -146,6 +147,160 @@
             animation: float 3s ease-in-out infinite;
         }
 
+        #startQuizBtn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .questionnaire {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFB6C1, #FFC0CB);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .questionnaire.active {
+            display: flex;
+        }
+
+        .question-container {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .question-container h2 {
+            font-size: 2em;
+            color: #E91E63;
+            margin-bottom: 30px;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .answer-btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: 3px solid #E91E63;
+            background: white;
+            color: #E91E63;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .answer-btn:hover {
+            background: #E91E63;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .answer-btn.selected {
+            background: #E91E63;
+            color: white;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        .next-btn {
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #E91E63, #F06292);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .next-btn.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .next-btn.enabled:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+        }
+
+        .final-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #E91E63, #F06292, #FF4081);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .final-screen.active {
+            display: flex;
+        }
+
+        .final-screen h1 {
+            font-size: 5em;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            animation: fadeInScale 1s ease-out;
+        }
+
+        .final-screen p {
+            font-size: 2em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInScale 1.2s ease-out;
+        }
+
+        .final-hearts {
+            position: absolute;
+            font-size: 3em;
+            opacity: 0.7;
+            animation: floatAround 10s ease-in-out infinite;
+        }
+
+        @keyframes floatAround {
+            0%, 100% { 
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% { 
+                transform: translate(50px, -50px) rotate(90deg);
+            }
+            50% { 
+                transform: translate(0, -100px) rotate(180deg);
+            }
+            75% { 
+                transform: translate(-50px, -50px) rotate(270deg);
+            }
+        }
+
         @keyframes fadeInScale {
             from {
                 opacity: 0;
@@ -183,9 +338,9 @@
         }
     </style>
 </head>
-<body>
+<body class="custom-bg">
     <div class="container">
-        <!-- <h1>Hey There! 💕</h1> -->
+        <h1>Hey There! 💕</h1>
         <div class="heart">❤️</div>
         <p class="question">Will you be my Valentine?</p>
         <div class="buttons">
@@ -199,6 +354,26 @@
         <h2>Yay! 🎉</h2>
         <div class="hearts">💝 💖 💕 💗 💓</div>
         <p style="color: white; font-size: 1.5em; margin-top: 20px;">I'm so happy! 😊</p>
+        <button id="startQuizBtn" style="margin-top: 30px; padding: 15px 30px; font-size: 1.1em; border: none; border-radius: 50px; background: white; color: #E91E63; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); height: 50px; width: auto; max-width: none; flex: none;">Answer a few questions 💕</button>
+    </div>
+
+    <div class="questionnaire" id="questionnaire">
+        <div class="question-container">
+            <h2 id="questionText"></h2>
+            <div class="answer-options" id="answerOptions"></div>
+            <button class="next-btn" id="nextBtn">Next</button>
+        </div>
+    </div>
+
+    <div class="final-screen" id="finalScreen">
+        <div class="final-hearts" style="top: 10%; left: 10%;">💖</div>
+        <div class="final-hearts" style="top: 20%; right: 15%; animation-delay: 2s;">💕</div>
+        <div class="final-hearts" style="bottom: 15%; left: 20%; animation-delay: 4s;">💗</div>
+        <div class="final-hearts" style="bottom: 25%; right: 10%; animation-delay: 6s;">💝</div>
+        <div class="final-hearts" style="top: 50%; left: 5%; animation-delay: 1s;">💓</div>
+        <div class="final-hearts" style="top: 60%; right: 8%; animation-delay: 3s;">❤️</div>
+        <h1>I love you 💕</h1>
+        <p>See you next week Wednesday ;)</p>
     </div>
 
     <script>
@@ -249,7 +424,7 @@
         });
 
         // Array of messages for the No button
-        const noMessages = ['No', 'Are you sure?', 'fr?', 'nuh uh'];
+        const noMessages = ['No', 'Are you sure?', 'Seriously?', 'Think again!', 'Really?', 'No way!'];
         let noMessageIndex = 0;
 
         // Handle No button clicks
@@ -266,6 +441,122 @@
             
             // Create confetti effect
             createConfetti();
+        });
+
+        // Start quiz button handler
+        document.getElementById('startQuizBtn').addEventListener('click', () => {
+            celebration.classList.remove('active');
+            startQuestionnaire();
+        });
+
+        // Questionnaire logic
+        const questionnaire = document.getElementById('questionnaire');
+        const finalScreen = document.getElementById('finalScreen');
+        const questionText = document.getElementById('questionText');
+        const answerOptions = document.getElementById('answerOptions');
+        const nextBtn = document.getElementById('nextBtn');
+
+        const questions = [
+            {
+                question: "What kind of food do you want?",
+                answers: ["Asian", "Italian", "Something Else"]
+            },
+            {
+                question: "What's the vibe?",
+                answers: ["Casual", "Smart Casual", "Kinda fancy", "Fancy"]
+            },
+            {
+                question: "Do you want dessert after?",
+                answers: ["Yesssss", "No"]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedAnswer = null;
+        let answers = {
+            food: '',
+            vibe: '',
+            dessert: ''
+        };
+
+        // Initialize EmailJS with your public key
+        // REPLACE 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
+        emailjs.init('YOUR_PUBLIC_KEY');
+
+        function startQuestionnaire() {
+            questionnaire.classList.add('active');
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            currentQuestion = index;
+            selectedAnswer = null;
+            nextBtn.classList.remove('enabled');
+
+            questionText.textContent = questions[index].question;
+            answerOptions.innerHTML = '';
+
+            questions[index].answers.forEach((answer, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.addEventListener('click', () => selectAnswer(answer, btn));
+                answerOptions.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(answer, btn) {
+            selectedAnswer = answer;
+            
+            // Store the answer
+            if (currentQuestion === 0) answers.food = answer;
+            if (currentQuestion === 1) answers.vibe = answer;
+            if (currentQuestion === 2) answers.dessert = answer;
+            
+            // Remove selected class from all buttons
+            document.querySelectorAll('.answer-btn').forEach(b => {
+                b.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked button
+            btn.classList.add('selected');
+            
+            // Enable next button
+            nextBtn.classList.add('enabled');
+        }
+
+        function sendEmail() {
+            // REPLACE these with your actual EmailJS Service ID and Template ID
+            const serviceID = 'YOUR_SERVICE_ID';
+            const templateID = 'YOUR_TEMPLATE_ID';
+
+            const templateParams = {
+                food_choice: answers.food,
+                vibe_choice: answers.vibe,
+                dessert_choice: answers.dessert
+            };
+
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                });
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (!selectedAnswer) return;
+
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            } else {
+                // Send email with answers
+                sendEmail();
+                
+                // Show final screen
+                questionnaire.classList.remove('active');
+                finalScreen.classList.add('active');
+            }
         });
 
         // Simple confetti effect
